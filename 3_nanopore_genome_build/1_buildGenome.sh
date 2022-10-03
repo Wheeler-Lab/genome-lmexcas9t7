@@ -70,8 +70,7 @@ ITER=0
 rm polish.changes.txt || echo
 echo "IUPAC polishing" > polish.changes.txt
 cp assembly.fasta assembly.polished$ITER.fasta
-mkdir pilonOut
-ITER=2
+# mkdir pilonOut
 while [ $ITER -lt 10 ]; do
 	$BWA index assembly.polished$ITER.fasta
 	$BWA mem -t $CPUS assembly.polished$ITER.fasta F.cor.fq R.cor.fq | $SAMTOOLS sort -o alignment.sort.bam
@@ -91,7 +90,7 @@ rm assembly.polish*.fasta.bwt
 rm assembly.polish*.fasta.pac
 rm assembly.polish*.fasta.sa
 
-#Final polish for non-IUPAC output and hapolid variants
+#Final polish for non-IUPAC output and haploid variants
 $BWA index assembly.polished.fasta
 $BWA mem -t $CPUS assembly.polished.fasta F.cor.fq R.cor.fq | $SAMTOOLS sort -o alignment.sort.bam
 $SAMTOOLS index alignment.sort.bam
@@ -100,4 +99,4 @@ echo "Non-IUPAC final polish" >> polish.changes.txt
 cat pilonOut/assembly.changes | nodejs ../pilonChanges.js >> polish.changes.txt
 cp pilonOut/assembly.fasta assembly.final.fasta
 $PILON --genome assembly.polished.fasta --frags alignment.sort.bam --output assembly --outdir pilonOut --variant --vcf --diploid --threads $CPUS
-$SAMTOOLS depth -aa alignment.sort.bam | nodejs coverage.js > coverage.txt
+$SAMTOOLS depth -aa alignment.sort.bam | nodejs ../coverage.js > coverage.txt
