@@ -1,3 +1,4 @@
+[![DOI](https://zenodo.org/badge/544940552.svg)](https://zenodo.org/badge/latestdoi/544940552)
 # _L. mexicana_ genome remapping, polishing and de-novo assembly code
 
 ## 1_remap_Fiebig_et_al
