@@ -1,4 +1,4 @@
-# /L. mexicana/ genome remapping, polishing and de-novo assembly code
+# _L. mexicana_ genome remapping, polishing and de-novo assembly code
 
 ## 1_remap_Fiebig_et_al
 
