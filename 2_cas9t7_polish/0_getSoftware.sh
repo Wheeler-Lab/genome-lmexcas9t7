@@ -33,3 +33,15 @@ make install
 cd ..
 
 git clone https://github.com/harvardinformatics/TranscriptomeAssemblyTools
+
+git clone https://github.com/ncbi/ncbi-vdb
+git clone https://github.com/ncbi/sra-tools
+cd ncbi-vdb
+./configure --relative-build-out-dir
+make -j12
+cd ../sra-tools
+./configure --relative-build-out-dir
+make -j12
+make
+cd ..
+./OUTDIR/sra-tools/linux/gcc/x86_64/rel/bin/vdb-config > /dev/null  # Trick SRA-TOOLS into thinking we've configured it...

@@ -11,9 +11,13 @@ SAMTOOLS="./samtools/bin/samtools"
 PORECHOP="./venv/bin/porechop"
 BWA="./bwa/bwa"
 
-#Fetch nanopore reads
-cp ../nanopore.reads1d2.fastq reads.nanopore.fastq
-cat ../nanopore.reads1d.fastq >> reads.nanopore.fastq
+# Prefetch Nanopore reads from SRA
+echo "Fetch Nanopore reads from SRA"
+./OUTDIR/sra-tools/linux/gcc/x86_64/rel/bin/prefetch -p SRR20123517
+echo "Convert SRA to fastq"
+./OUTDIR/sra-tools/linux/gcc/x86_64/rel/bin/fasterq-dump --split-files SRR20123517
+mv SRR20123517.fastq reads.nanopore.fastq
+rm -r SRR20123517
 
 #Chop adapters
 $PORECHOP --threads $CPUS --input reads.nanopore.fastq --output reads.nanoporeTrimmed.fastq
@@ -34,8 +38,14 @@ awk '/^S/{print ">"$2"\n"$3}' assembly.gfa > assembly.fasta
 cat assembly.fasta | nodejs ../fastaLeng.js > assembly.lengths.txt
 
 #Fetch illumina reads
-gunzip -c ../../cas9t7_polish/56_S4_R1_001.fastq.gz > F.fq
-gunzip -c ../../cas9t7_polish/56_S4_R2_001.fastq.gz > R.fq
+echo "Fetch Illumina reads from SRA"
+./OUTDIR/sra-tools/linux/gcc/x86_64/rel/bin/prefetch -p SRR21208582
+echo "Convert SRA to fastq"
+./OUTDIR/sra-tools/linux/gcc/x86_64/rel/bin/fasterq-dump --split-files SRR21208582
+mv SRR21208582_1.fastq F.fq
+mv SRR21208582_2.fastq R.fq
+rm -r SRR21208582
+
 cat F.fq | nodejs ../fastaHisto.js > reads.illuminaF.histo.txt
 cat R.fq | nodejs ../fastaHisto.js > reads.illuminaR.histo.txt
 

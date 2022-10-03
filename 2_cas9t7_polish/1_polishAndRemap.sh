@@ -9,9 +9,14 @@ PILON="java -Xmx20G -jar pilon/pilon.jar"
 curl "https://tritrypdb.org/common/downloads/release-50/LmexicanaMHOMGT2001U1103/fasta/data/TriTrypDB-50_LmexicanaMHOMGT2001U1103_Genome.fasta" -o genome.fasta
 cp ../../1_remap_Fiebig_et_al/work/genome.gff genome.gff
 
-#Fetch illumina reads
-gunzip ../56_S4_R1_001.fastq.gz -c > F.fq
-gunzip ../56_S4_R2_001.fastq.gz -c > R.fq
+# Prefetch illumina reads from SRA
+echo "Fetch Illumina reads from SRA"
+./OUTDIR/sra-tools/linux/gcc/x86_64/rel/bin/prefetch -p SRR21208582
+echo "Convert SRA to fastq"
+./OUTDIR/sra-tools/linux/gcc/x86_64/rel/bin/fasterq-dump --split-files SRR21208582
+mv SRR21208582_1.fastq F.fq
+mv SRR21208582_2.fastq R.fq
+rm -r SRR21208582
 
 # #https://informatics.fas.harvard.edu/best-practices-for-de-novo-transcriptome-assembly-with-trinity.html
 perl rcorrector/run_rcorrector.pl -t 12 -1 F.fq -2 R.fq 
